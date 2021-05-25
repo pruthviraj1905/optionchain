@@ -26,7 +26,6 @@ def index():
     cur = con.cursor()
     cur.execute('CREATE TABLE IF NOT EXISTS NIFTY (Time text,Nifty integer,Call_Sum_of_OI integer,Put_Sum_of_OI integer,Diffrence integer)')
     cur.execute("select * from NIFTY")
-    con.commit()
    
     rows = cur.fetchall()
     return render_template("list.html",rows = rows)
