@@ -26,11 +26,11 @@
             <tbody>
             {% for row in rows %}
                <tr>
-                  <th>{{row["Time"]}}</th>
-                  <th>{{row["Nifty"]}}</th>
-                  <th> {{ row["Call_Sum_of_OI"]}}</th>
-                  <th>{{row["Put_Sum_of_OI"]}}</th>	
-                  <th>{{row["Diffrence"]}}</th>	
+                  <th>{{row[0]}}</th>
+                  <th>{{row[1]}}</th>
+                  <th> {{ row[2]}}</th>
+                  <th>{{row[3]}}</th>	
+                  <th>{{row[4]}}</th>	
                </tr>
             {% endfor %}
             </tbody>
