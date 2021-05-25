@@ -1,5 +1,3 @@
-from crochet import setup
-setup()
 from flask import Flask,render_template
 import sqlite3 as sql
 from apscheduler.schedulers.background import BackgroundScheduler
