@@ -7,6 +7,7 @@ import pandas as pd
 import os
 import psycopg2
 import requests
+from psycopg2.extras import DictCursor
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
@@ -17,25 +18,26 @@ app = Flask(__name__)
 cron = BackgroundScheduler()
 cron.start()
 
+def select_rows_dict_cursor(query):
+    """Run SELECT query and return list of dicts."""
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=DictCursor) as cur:
+        cur.execute(query)
+        records = cur.fetchall()
+    cur.close()
+    return records
+
 @app.route('/')
 
 def index():
-    con = psycopg2.connect(DATABASE_URL) 
-    #con.row_factory = sql.Row
-   
-    cur = con.cursor()
-    cur.execute('CREATE TABLE IF NOT EXISTS NIFTY (Time text,Nifty integer,Call_Sum_of_OI integer,Put_Sum_of_OI integer,Diffrence integer)')
-    cur.execute("select * from NIFTY")
-   
-    rows = cur.fetchall()
+    con = psycopg2.connect(DATABASE_URL)   
+    rows = select_rows_dict_cursor("select * from NIFTY")
     return render_template("list.html",rows = rows)
 
 @cron.scheduled_job('interval', seconds=180)
 def scrapper():
     global url,payload
     requests.post(url,data=payload)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
