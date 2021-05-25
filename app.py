@@ -34,7 +34,7 @@ def index():
     rows = select_rows_dict_cursor("select * from NIFTY")
     return render_template("list.html",rows = rows)
 
-@cron.scheduled_job('interval', seconds=180)
+@cron.scheduled_job('interval', seconds=360)
 def scrapper():
     global url,payload
     requests.post(url,data=payload)
