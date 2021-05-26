@@ -1,6 +1,5 @@
 Flask==1.1.2
 pandas==1.2.4
-APScheduler
 gunicorn==20.1.0
 psycopg2==2.8.6
 requests==2.25.1

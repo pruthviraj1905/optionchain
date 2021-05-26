@@ -1,6 +1,4 @@
 from flask import Flask,render_template
-import sqlite3 as sql
-from apscheduler.schedulers.background import BackgroundScheduler
 import time
 from importlib import import_module
 import pandas as pd 
@@ -11,12 +9,8 @@ from psycopg2.extras import DictCursor
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-url = 'https://optionscrapy.herokuapp.com/schedule.json'
-payload = dict(project='default', spider='live')
-
 app = Flask(__name__)
-cron = BackgroundScheduler()
-cron.start()
+
 
 def select_rows_dict_cursor(query):
     """Run SELECT query and return list of dicts."""
@@ -28,16 +22,22 @@ def select_rows_dict_cursor(query):
     return records
 
 @app.route('/')
-
 def index():
-    con = psycopg2.connect(DATABASE_URL)   
-    rows = select_rows_dict_cursor("select * from NIFTY")
-    return render_template("list.html",rows = rows)
+    return render_template('index.html')
 
-@cron.scheduled_job('interval', seconds=360)
-def scrapper():
-    global url,payload
-    requests.post(url,data=payload)
+
+@app.route('/nifty')
+def nifty():
+    con = psycopg2.connect(DATABASE_URL)   
+    rows = select_rows_dict_cursor("select * from NIFTY ORDER BY Time DESC")
+    return render_template("nifty.html",rows = rows)
+
+@app.route('/banknifty')
+def banknifty():
+    con = psycopg2.connect(DATABASE_URL)   
+    rows = select_rows_dict_cursor("select * from BANKNIFTY ORDER BY Time DESC")
+    return render_template("banknifty.html",rows = rows)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
